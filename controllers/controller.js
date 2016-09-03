@@ -29,17 +29,25 @@ var Article = require('../models/articleSchema.js');
 //=====================================================
 
 router.get('/', function(req,res){
-
+  res.send('index.html');
 });
 
 router.get('/api/saved', function(req,res){
-
+  Article.find({}).sort({date: -1}).exec(function(err, doc){
+    if (err) throw err;
+    res.send(doc);
+  });
 });
 
 router.post('/api/saved', function(req, res){
-
+  var newArticle = new Article(req.body);
+  Article.create({title: req.body.title, URL: req.body.URL, date: req.body.date});
 });
 
-router.delete('/api/saved', function(req, res){
-
+router.delete('/api/saved/:id', function(req, res){
+    Article.remove({_id: req.params.id}, function(err){
+      if (err) throw err;
+    });
 });
+
+module.exports = router;
