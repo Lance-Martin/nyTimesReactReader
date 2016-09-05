@@ -31,6 +31,8 @@ var Search = React.createClass({
     Helpers.postSaved(title, url, date).then(function(err, res){
       if (err) throw err;
     });
+    console.log(this.props.checkSaved);
+    this.props.checkSaved();
   },
   // This function allows childrens to update the parent.
   setTerm: function(term){

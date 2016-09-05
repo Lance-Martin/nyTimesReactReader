@@ -27113,6 +27113,7 @@
 	      });
 	    });
 	  },
+
 	  // componentDidUpdate: function(prevProps, prevState){
 	  //   if(prevState.searchTerm != this.state.searchTerm){
 	  //     console.log("UPDATED");
@@ -27136,7 +27137,8 @@
 	    console.log(this.state.savedArticles);
 	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
 	      return React.cloneElement(child, {
-	        savedArticles: _this.state.savedArticles
+	        savedArticles: _this.state.savedArticles,
+	        checkSaved: _this.checkSaved
 	      });
 	    });
 	    var jumboStyle = {
@@ -27302,6 +27304,8 @@
 	    Helpers.postSaved(title, url, date).then(function (err, res) {
 	      if (err) throw err;
 	    });
+	    console.log(this.props.checkSaved);
+	    this.props.checkSaved();
 	  },
 	  // This function allows childrens to update the parent.
 	  setTerm: function setTerm(term) {
@@ -27415,10 +27419,14 @@
 
 	  // When a user submits...
 	  handleClick: function handleClick() {
-
 	    console.log("CLICK");
 	    // Set the parent to have the search term
 	    this.props.getArticles(this.state.term, this.state.startDate, this.state.endDate);
+	    this.setState({
+	      term: "",
+	      startDate: "",
+	      endDate: ""
+	    });
 	  },
 	  render: function render() {
 	    return React.createElement(

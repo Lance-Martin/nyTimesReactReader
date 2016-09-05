@@ -21,11 +21,14 @@ var Query = React.createClass({
 
 	// When a user submits...
 	handleClick: function(){
-
 		console.log("CLICK");
 		// Set the parent to have the search term
 		this.props.getArticles(this.state.term, this.state.startDate, this.state.endDate);
-
+    this.setState({
+      term: "",
+      startDate: "",
+      endDate: ""
+    })
 	},
   render: function(){
     return (

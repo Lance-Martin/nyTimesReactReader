@@ -18,6 +18,7 @@ var Main = React.createClass({
       })
     });
   },
+
   // componentDidUpdate: function(prevProps, prevState){
   //   if(prevState.searchTerm != this.state.searchTerm){
   //     console.log("UPDATED");
@@ -39,7 +40,8 @@ var Main = React.createClass({
     console.log(this.state.savedArticles);
     const childrenWithProps = React.Children.map(this.props.children,
      (child) => React.cloneElement(child, {
-       savedArticles: this.state.savedArticles
+       savedArticles: this.state.savedArticles,
+       checkSaved: this.checkSaved
      })
     );
     var jumboStyle = {
