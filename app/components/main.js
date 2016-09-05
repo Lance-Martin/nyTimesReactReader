@@ -5,6 +5,19 @@ var Search = require('./children/search.js');
 var Helpers = require('./utils/helpers.js');
 
 var Main = React.createClass({
+  getInitialState: function() {
+    return {
+      savedArticles: []
+    }
+  },
+  checkSaved: function () {
+    var that = this;
+    Helpers.getSaved().then(function(docs){
+      that.setState({
+        savedArticles: docs.data
+      })
+    });
+  },
   // componentDidUpdate: function(prevProps, prevState){
   //   if(prevState.searchTerm != this.state.searchTerm){
   //     console.log("UPDATED");
@@ -22,6 +35,13 @@ var Main = React.createClass({
   //     }
   // },
   render: function() {
+    this.checkSaved();
+    console.log(this.state.savedArticles);
+    const childrenWithProps = React.Children.map(this.props.children,
+     (child) => React.cloneElement(child, {
+       savedArticles: this.state.savedArticles
+     })
+    );
     var jumboStyle = {
       textAlign: 'center'
     };
@@ -38,7 +58,7 @@ var Main = React.createClass({
         </div>
       </nav>
       <div className = "row">
-        {this.props.children}
+        {childrenWithProps}
       </div>
     </div>
   );

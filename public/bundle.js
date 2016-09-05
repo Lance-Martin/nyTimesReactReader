@@ -27100,6 +27100,19 @@
 	var Main = React.createClass({
 	  displayName: 'Main',
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      savedArticles: []
+	    };
+	  },
+	  checkSaved: function checkSaved() {
+	    var that = this;
+	    Helpers.getSaved().then(function (docs) {
+	      that.setState({
+	        savedArticles: docs.data
+	      });
+	    });
+	  },
 	  // componentDidUpdate: function(prevProps, prevState){
 	  //   if(prevState.searchTerm != this.state.searchTerm){
 	  //     console.log("UPDATED");
@@ -27117,6 +27130,15 @@
 	  //     }
 	  // },
 	  render: function render() {
+	    var _this = this;
+
+	    this.checkSaved();
+	    console.log(this.state.savedArticles);
+	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
+	      return React.cloneElement(child, {
+	        savedArticles: _this.state.savedArticles
+	      });
+	    });
 	    var jumboStyle = {
 	      textAlign: 'center'
 	    };
@@ -27166,7 +27188,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'row' },
-	        this.props.children
+	        childrenWithProps
 	      )
 	    );
 	  }
@@ -27185,7 +27207,13 @@
 	var Saved = React.createClass({
 	  displayName: "Saved",
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      saved: this.props.savedArticles
+	    };
+	  },
 	  render: function render() {
+
 	    return React.createElement(
 	      "div",
 	      { className: "panel panel-default" },
@@ -27201,10 +27229,30 @@
 	      React.createElement(
 	        "div",
 	        { className: "panel-body" },
-	        React.createElement(
+	        this.state.saved ? this.state.saved.map(function (article, i) {
+	          return React.createElement(
+	            "div",
+	            { key: i, className: "container" },
+	            React.createElement(
+	              "h4",
+	              { key: i },
+	              article.title
+	            ),
+	            React.createElement(
+	              "p",
+	              null,
+	              "article date:" + article.date
+	            ),
+	            React.createElement(
+	              "a",
+	              { className: "btn btn-default", href: article.URL },
+	              "Read Full Story"
+	            )
+	          );
+	        }) : React.createElement(
 	          "h3",
 	          null,
-	          " text here"
+	          "No search has been entered."
 	        )
 	      )
 	    );
@@ -27262,13 +27310,6 @@
 	    });
 	  },
 	  render: function render() {
-	    var _this = this;
-
-	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
-	      return React.cloneElement(child, {
-	        getArticles: _this.getArticles
-	      });
-	    });
 	    var that = this;
 	    return React.createElement(
 	      'div',
@@ -27306,7 +27347,6 @@
 	        React.createElement(
 	          'div',
 	          { className: 'panel-body' },
-	          console.log(this.state),
 	          this.state.results ? this.state.results.map(function (result, i) {
 	            return React.createElement(
 	              'div',
@@ -27335,7 +27375,7 @@
 	          }) : React.createElement(
 	            'h3',
 	            null,
-	            'no search has been entered'
+	            'No search has been entered.'
 	          )
 	        )
 	      )
@@ -27473,10 +27513,7 @@
 	    });
 	  },
 	  getSaved: function getSaved() {
-
 	    return axios.get('/api/saved').then(function (response) {
-
-	      console.log(response);
 	      return response;
 	    });
 	  },

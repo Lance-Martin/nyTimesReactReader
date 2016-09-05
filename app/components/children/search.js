@@ -39,11 +39,6 @@ var Search = React.createClass({
     })
   },
   render: function(){
-    const childrenWithProps = React.Children.map(this.props.children,
-     (child) => React.cloneElement(child, {
-       getArticles: this.getArticles
-     })
-    );
     var that = this;
     return (
       <div className = "container">
@@ -62,7 +57,6 @@ var Search = React.createClass({
             <h3 className="panel-title">Your search results</h3>
           </div>
           <div className="panel-body">
-            {console.log(this.state)}
             {this.state.results ? this.state.results.map(function(result, i)
               {
                 return (
@@ -74,7 +68,7 @@ var Search = React.createClass({
                   </div>
                 )
               }
-            ) : (<h3>no search has been entered</h3>)}
+            ) : (<h3>No search has been entered.</h3>)}
           </div>
         </div>
       </div>

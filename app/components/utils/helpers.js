@@ -14,11 +14,8 @@ var Helpers = {
 		});
   },
   getSaved: function(){
-
 		return axios.get('/api/saved')
 			.then(function(response){
-
-				console.log(response);
 				return response;
 			});
 	},
