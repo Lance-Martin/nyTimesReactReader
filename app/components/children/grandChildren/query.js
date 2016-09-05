@@ -1,13 +1,20 @@
 var React = require('react');
 
 var Query = React.createClass({
-  handleChange: function(event){
+  getInitialState: function(){
+		return {
+			term: "",
+      startDate:"",
+      endDate: "",
+		}
+	},
+  handleChange: function(e){
 
     	// Here we create syntax to capture any change in text to the query terms (pre-search).
     	// See this Stack Overflow answer for more details:
     	// http://stackoverflow.com/questions/21029999/react-js-identifying-different-inputs-with-one-onchange-handler
     	var newState = {};
-    	newState[event.target.id] = event.target.value;
+    	newState[e.target.name] = e.target.value;
     	this.setState(newState);
 
 	},
@@ -16,24 +23,20 @@ var Query = React.createClass({
 	handleClick: function(){
 
 		console.log("CLICK");
-		console.log(this.state.term);
-
 		// Set the parent to have the search term
-		this.props.setTerm(this.state.term);
+		this.props.getArticles(this.state.term, this.state.startDate, this.state.endDate);
 
 	},
   render: function(){
     return (
-      <div className = "input-group" >
-        <form>
+      <div className = "form-group" >
           <h3>Article title:</h3>
-          <input type = "text" name = "searchTitle" className = "form-control"/>
+          <input type="text" className="form-control" name = "term" value={this.state.term} onChange= {this.handleChange} />
           <h3>Start date:</h3>
-          <input type = "text" name = "startDate" className = "form-control"/>
+          <input type = "text" name = "startDate" value = {this.state.startDate} className = "form-control" onChange = {this.handleChange}/>
           <h3>End date:</h3>
-          <input type = "text" name = "endDate" className = "form-control"/>
-          <input type = "submit" value = "submit" className = "btn-danger"/>
-        </form>
+          <input type = "text" value = {this.state.endDate} name = "endDate" className = "form-control" onChange = {this.handleChange} />
+          <button type = "button" onClick = {this.handleClick} className = "btn btn-danger">Submit</button>
       </div>
     );
   }

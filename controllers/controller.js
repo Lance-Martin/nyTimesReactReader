@@ -40,6 +40,7 @@ router.get('/api/saved', function(req,res){
 });
 
 router.post('/api/saved', function(req, res){
+  console.log('route hit');
   var newArticle = new Article(req.body);
   Article.create({title: req.body.title, URL: req.body.URL, date: req.body.date});
 });

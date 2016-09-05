@@ -5,19 +5,6 @@ var Search = require('./children/search.js');
 var Helpers = require('./utils/helpers.js');
 
 var Main = React.createClass({
-  getInitialState: function(){
-    return {
-        searchTerm: "",
-        results: "",
-        history: []
-    }
-  },
-  setTerm: function(title){
-    this.setState({
-			searchTerm: title
-		})
-  },
-
   // componentDidUpdate: function(prevProps, prevState){
   //   if(prevState.searchTerm != this.state.searchTerm){
   //     console.log("UPDATED");

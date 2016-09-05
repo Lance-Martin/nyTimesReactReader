@@ -27080,13 +27080,7 @@
 	module.exports = React.createElement(
 			Route,
 			{ path: '/', component: Main },
-			React.createElement(
-					Route,
-					{ path: 'Search', component: Search },
-					React.createElement(Route, { path: 'query', component: Query }),
-					React.createElement(Route, { path: 'results', component: Results }),
-					React.createElement(IndexRoute, { component: Query })
-			),
+			React.createElement(Route, { path: 'Search', component: Search }),
 			React.createElement(Route, { path: 'Saved', component: Saved }),
 			React.createElement(IndexRoute, { component: Search })
 	);
@@ -27105,19 +27099,6 @@
 
 	var Main = React.createClass({
 	  displayName: 'Main',
-
-	  getInitialState: function getInitialState() {
-	    return {
-	      searchTerm: "",
-	      results: "",
-	      history: []
-	    };
-	  },
-	  setTerm: function setTerm(title) {
-	    this.setState({
-	      searchTerm: title
-	    });
-	  },
 
 	  // componentDidUpdate: function(prevProps, prevState){
 	  //   if(prevState.searchTerm != this.state.searchTerm){
@@ -27239,29 +27220,124 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
+	var ReactDOM = __webpack_require__(34);
 
 	var Query = __webpack_require__(239);
 	var Results = __webpack_require__(240);
+	var Helpers = __webpack_require__(241);
 	var Search = React.createClass({
 	  displayName: 'Search',
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      searchTerm: "",
+	      startYear: "",
+	      endYear: "",
+	      results: "",
+	      history: [] /*Note how we added in this history state variable*/
+	    };
+	  },
+	  getArticles: function getArticles(queryTitle, startYear, endYear) {
+	    var that = this;
+	    Helpers.runQuery(queryTitle, startYear, endYear).then(function (articles) {
+	      //if (err) throw err;
+	      console.log('my response:');
+	      that.setState({ results: articles });
+	      console.log(that.state.results);
+	    });
+	  },
+	  saveStory: function saveStory(event) {
+	    console.log(event.target.dataset);
+	    var title = event.target.dataset.title;
+	    var url = event.target.dataset.url;
+	    var date = event.target.dataset.date;
+	    Helpers.postSaved(title, url, date).then(function (err, res) {
+	      if (err) throw err;
+	    });
+	  },
+	  // This function allows childrens to update the parent.
+	  setTerm: function setTerm(term) {
+	    this.setState({
+	      searchTerm: term
+	    });
+	  },
 	  render: function render() {
+	    var _this = this;
+
+	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
+	      return React.cloneElement(child, {
+	        getArticles: _this.getArticles
+	      });
+	    });
+	    var that = this;
 	    return React.createElement(
 	      'div',
-	      { className: 'panel panel-default' },
+	      { className: 'container' },
 	      React.createElement(
 	        'div',
-	        { className: 'panel-heading' },
+	        { className: 'panel panel-default' },
 	        React.createElement(
-	          'h3',
-	          { className: 'panel-title' },
-	          'Search Articles'
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h3',
+	            { className: 'panel-title' },
+	            'Search Articles'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          React.createElement(Query, { getArticles: this.getArticles })
 	        )
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'panel-body' },
-	        this.props.children
+	        { className: 'panel panel-default' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h3',
+	            { className: 'panel-title' },
+	            'Your search results'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          console.log(this.state),
+	          this.state.results ? this.state.results.map(function (result, i) {
+	            return React.createElement(
+	              'div',
+	              { key: i, className: 'container' },
+	              React.createElement(
+	                'h4',
+	                { key: i },
+	                result.headline.main
+	              ),
+	              React.createElement(
+	                'p',
+	                null,
+	                "article date:" + result.pub_date
+	              ),
+	              React.createElement(
+	                'a',
+	                { className: 'btn btn-default', href: result.web_url },
+	                'Read Full Story'
+	              ),
+	              React.createElement(
+	                'btn',
+	                { className: 'btn btn-danger', 'data-title': result.headline.main, 'data-date': result.pub_date, 'data-url': result.web_url, onClick: that.saveStory },
+	                'Save Article'
+	              )
+	            );
+	          }) : React.createElement(
+	            'h3',
+	            null,
+	            'no search has been entered'
+	          )
+	        )
 	      )
 	    );
 	  }
@@ -27280,32 +27356,56 @@
 	var Query = React.createClass({
 	  displayName: "Query",
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      term: "",
+	      startDate: "",
+	      endDate: ""
+	    };
+	  },
+	  handleChange: function handleChange(e) {
+
+	    // Here we create syntax to capture any change in text to the query terms (pre-search).
+	    // See this Stack Overflow answer for more details:
+	    // http://stackoverflow.com/questions/21029999/react-js-identifying-different-inputs-with-one-onchange-handler
+	    var newState = {};
+	    newState[e.target.name] = e.target.value;
+	    this.setState(newState);
+	  },
+
+	  // When a user submits...
+	  handleClick: function handleClick() {
+
+	    console.log("CLICK");
+	    // Set the parent to have the search term
+	    this.props.getArticles(this.state.term, this.state.startDate, this.state.endDate);
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { className: "input-group" },
+	      { className: "form-group" },
 	      React.createElement(
-	        "form",
+	        "h3",
 	        null,
-	        React.createElement(
-	          "h3",
-	          null,
-	          "Article title:"
-	        ),
-	        React.createElement("input", { type: "text", name: "searchTitle", className: "form-control" }),
-	        React.createElement(
-	          "h3",
-	          null,
-	          "Start date:"
-	        ),
-	        React.createElement("input", { type: "text", name: "startDate", className: "form-control" }),
-	        React.createElement(
-	          "h3",
-	          null,
-	          "End date:"
-	        ),
-	        React.createElement("input", { type: "text", name: "endDate", className: "form-control" }),
-	        React.createElement("input", { type: "submit", value: "submit", className: "btn-danger" })
+	        "Article title:"
+	      ),
+	      React.createElement("input", { type: "text", className: "form-control", name: "term", value: this.state.term, onChange: this.handleChange }),
+	      React.createElement(
+	        "h3",
+	        null,
+	        "Start date:"
+	      ),
+	      React.createElement("input", { type: "text", name: "startDate", value: this.state.startDate, className: "form-control", onChange: this.handleChange }),
+	      React.createElement(
+	        "h3",
+	        null,
+	        "End date:"
+	      ),
+	      React.createElement("input", { type: "text", value: this.state.endDate, name: "endDate", className: "form-control", onChange: this.handleChange }),
+	      React.createElement(
+	        "button",
+	        { type: "button", onClick: this.handleClick, className: "btn btn-danger" },
+	        "Submit"
 	      )
 	    );
 	  }
@@ -27317,18 +27417,35 @@
 /* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(1);
 
 	var Results = React.createClass({
-	  displayName: 'Results',
+	  displayName: "Results",
 
 	  render: function render() {
 	    return React.createElement(
-	      'p',
-	      null,
-	      'the results are here'
+	      "div",
+	      { className: "panel panel-default" },
+	      React.createElement(
+	        "div",
+	        { className: "panel-heading" },
+	        React.createElement(
+	          "h3",
+	          { className: "panel-title" },
+	          "Your search results"
+	        )
+	      ),
+	      React.createElement(
+	        "div",
+	        { className: "panel-body" },
+	        React.createElement(
+	          "h2",
+	          null,
+	          "no results yet"
+	        )
+	      )
 	    );
 	  }
 	});
@@ -27346,13 +27463,13 @@
 	var apiCode = 'a4a45edb5a264d8291dd90482a5f7c7d';
 
 	var Helpers = {
-	  runQuery: function runQuery(title) {
-	    var queryURL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json/&q=' + title + "/api-key=" + apiCode;
+	  runQuery: function runQuery(title, startYear, endYear) {
+	    var queryURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + title + "&page=0&sort=newest&begin_date=" + startYear + "0101&end_date=" + endYear + "0101&api-key=" + apiCode;
+	    // var queryURL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json/&q='+ title + "/api-key="+apiCode;
 
 	    return axios.get(queryURL).then(function (response) {
 
-	      console.log(response);
-	      return response.data.results;
+	      return response.data.response.docs;
 	    });
 	  },
 	  getSaved: function getSaved() {
@@ -27364,7 +27481,7 @@
 	    });
 	  },
 	  postSaved: function postSaved(title, URL, date) {
-
+	    console.log('helper activated');
 	    return axios.post('/api/saved', { title: title, URL: URL, date: date }).then(function (result) {
 	      console.log(result);
 	      return result;
