@@ -3,11 +3,15 @@ var Schema = mongoose.Schema;
 var articleSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
+    dropDups: true
+
   },
   URL: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   date: {
     type: Date

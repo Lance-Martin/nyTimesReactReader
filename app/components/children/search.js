@@ -17,10 +17,7 @@ var Search = React.createClass({
   getArticles: function(queryTitle, startYear, endYear) {
     var that = this;
     Helpers.runQuery(queryTitle, startYear, endYear).then(function(articles){
-      //if (err) throw err;
-      console.log('my response:');
       that.setState({ results: articles});
-      console.log(that.state.results);
     })
   },
   saveStory: function(event) {
@@ -31,8 +28,7 @@ var Search = React.createClass({
     Helpers.postSaved(title, url, date).then(function(err, res){
       if (err) throw err;
     });
-    console.log(this.props.checkSaved);
-    this.props.checkSaved();
+    this.forceUpdate();
   },
   // This function allows childrens to update the parent.
   setTerm: function(term){

@@ -10,38 +10,42 @@ var Main = React.createClass({
       savedArticles: []
     }
   },
-  checkSaved: function () {
+  componentWillMount: function () {
     var that = this;
     Helpers.getSaved().then(function(docs){
+      console.log("my docs",docs)
       that.setState({
         savedArticles: docs.data
       })
     });
   },
-
-  // componentDidUpdate: function(prevProps, prevState){
-  //   if(prevState.searchTerm != this.state.searchTerm){
-  //     console.log("UPDATED");
-  //     // Run the query for the article title
-  //     helpers.runQuery(this.state.searchTerm)
-  //       .then(function(data){
-  //         if (data != this.state.results)
-  //         {
-  //           console.log("Address", data);
-  //           this.setState({
-  //             results: data
-  //           });
-  //         }
-  //       }.bind(this);
-  //     }
-  // },
+  componentDidUpdate: function () {
+    var that = this;
+    Helpers.getSaved().then(function(docs){
+      console.log("my docs",docs)
+      that.setState({
+        savedArticles: docs.data
+      })
+    });
+  },
+  removeSaved: function(id){
+    console.log("remove on main hit");
+    var that = this;
+    Helpers.deleteSaved(id).then(function(results){
+      console.log("my results",results)
+      that.setState({
+        savedArticles: results.data
+      });
+    });
+  },
   render: function() {
-    this.checkSaved();
     console.log(this.state.savedArticles);
+    //this.checkSaved();
     const childrenWithProps = React.Children.map(this.props.children,
      (child) => React.cloneElement(child, {
        savedArticles: this.state.savedArticles,
-       checkSaved: this.checkSaved
+       checkSaved: this.checkSaved,
+       removeSaved: this.removeSaved
      })
     );
     var jumboStyle = {

@@ -27105,40 +27105,44 @@
 	      savedArticles: []
 	    };
 	  },
-	  checkSaved: function checkSaved() {
+	  componentWillMount: function componentWillMount() {
 	    var that = this;
 	    Helpers.getSaved().then(function (docs) {
+	      console.log("my docs", docs);
 	      that.setState({
 	        savedArticles: docs.data
 	      });
 	    });
 	  },
-
-	  // componentDidUpdate: function(prevProps, prevState){
-	  //   if(prevState.searchTerm != this.state.searchTerm){
-	  //     console.log("UPDATED");
-	  //     // Run the query for the article title
-	  //     helpers.runQuery(this.state.searchTerm)
-	  //       .then(function(data){
-	  //         if (data != this.state.results)
-	  //         {
-	  //           console.log("Address", data);
-	  //           this.setState({
-	  //             results: data
-	  //           });
-	  //         }
-	  //       }.bind(this);
-	  //     }
-	  // },
+	  componentDidUpdate: function componentDidUpdate() {
+	    var that = this;
+	    Helpers.getSaved().then(function (docs) {
+	      console.log("my docs", docs);
+	      that.setState({
+	        savedArticles: docs.data
+	      });
+	    });
+	  },
+	  removeSaved: function removeSaved(id) {
+	    console.log("remove on main hit");
+	    var that = this;
+	    Helpers.deleteSaved(id).then(function (results) {
+	      console.log("my results", results);
+	      that.setState({
+	        savedArticles: results.data
+	      });
+	    });
+	  },
 	  render: function render() {
 	    var _this = this;
 
-	    this.checkSaved();
 	    console.log(this.state.savedArticles);
+	    //this.checkSaved();
 	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
 	      return React.cloneElement(child, {
 	        savedArticles: _this.state.savedArticles,
-	        checkSaved: _this.checkSaved
+	        checkSaved: _this.checkSaved,
+	        removeSaved: _this.removeSaved
 	      });
 	    });
 	    var jumboStyle = {
@@ -27211,11 +27215,21 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      saved: this.props.savedArticles
+	      saved: []
 	    };
 	  },
+	  handleClick: function handleClick(event) {
+	    var id = event.target.dataset.id;
+	    this.props.removeSaved(id);
+	    this.forceUpdate();
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    console.log("NEW PROPS BEING RECEIVED", nextProps);
+	    this.setState({ saved: nextProps.savedArticles });
+	  },
 	  render: function render() {
-
+	    var that = this;
+	    console.log("nwe saved", this.state.saved);
 	    return React.createElement(
 	      "div",
 	      { className: "panel panel-default" },
@@ -27249,6 +27263,11 @@
 	              "a",
 	              { className: "btn btn-default", href: article.URL },
 	              "Read Full Story"
+	            ),
+	            React.createElement(
+	              "btn",
+	              { className: "btn btn-danger", "data-id": article._id, onClick: that.handleClick },
+	              "Delete story"
 	            )
 	          );
 	        }) : React.createElement(
@@ -27290,10 +27309,7 @@
 	  getArticles: function getArticles(queryTitle, startYear, endYear) {
 	    var that = this;
 	    Helpers.runQuery(queryTitle, startYear, endYear).then(function (articles) {
-	      //if (err) throw err;
-	      console.log('my response:');
 	      that.setState({ results: articles });
-	      console.log(that.state.results);
 	    });
 	  },
 	  saveStory: function saveStory(event) {
@@ -27304,8 +27320,7 @@
 	    Helpers.postSaved(title, url, date).then(function (err, res) {
 	      if (err) throw err;
 	    });
-	    console.log(this.props.checkSaved);
-	    this.props.checkSaved();
+	    this.forceUpdate();
 	  },
 	  // This function allows childrens to update the parent.
 	  setTerm: function setTerm(term) {
@@ -27528,13 +27543,12 @@
 	  postSaved: function postSaved(title, URL, date) {
 	    console.log('helper activated');
 	    return axios.post('/api/saved', { title: title, URL: URL, date: date }).then(function (result) {
-	      console.log(result);
 	      return result;
 	    });
 	  },
-	  deleteSaved: function deleteSaved() {
-	    return axios.delete('/api/saved' + article._id).then(function (result) {
-	      console.log(result);
+	  deleteSaved: function deleteSaved(id) {
+	    return axios.delete('/api/saved/' + id).then(function (result) {
+	      return result;
 	    });
 	  }
 	};

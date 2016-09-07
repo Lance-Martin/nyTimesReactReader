@@ -2,12 +2,22 @@ var React = require('react');
 
 var Saved = React.createClass({
   getInitialState: function() {
-    return ({
-      saved: this.props.savedArticles
-    })
+    return {
+      saved: []
+    }
+  },
+  handleClick: function(event) {
+    var id = event.target.dataset.id;
+    this.props.removeSaved(id);
+    this.forceUpdate();
+  },
+  componentWillReceiveProps: function(nextProps){
+    console.log("NEW PROPS BEING RECEIVED",nextProps);
+    this.setState({saved:nextProps.savedArticles});
   },
   render: function(){
-
+    var that = this
+    console.log("nwe saved",this.state.saved);
     return (
       <div className="panel panel-default">
         <div className="panel-heading">
@@ -21,6 +31,7 @@ var Saved = React.createClass({
                 <h4 key={i}>{article.title}</h4>
                 <p>{"article date:" + article.date}</p>
                 <a className = "btn btn-default" href = {article.URL}>Read Full Story</a>
+                <btn className = "btn btn-danger" data-id = {article._id} onClick = {that.handleClick}>Delete story</btn>
               </div>
             )
           }

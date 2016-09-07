@@ -46,8 +46,13 @@ router.post('/api/saved', function(req, res){
 });
 
 router.delete('/api/saved/:id', function(req, res){
-    Article.remove({_id: req.params.id}, function(err){
+    Article.remove({_id: req.params.id}, function(err, docs){
       if (err) throw err;
+      Article.find({}).sort({date: -1}).exec(function(err, doc){
+        if (err) throw err;
+        console.log(doc)
+        res.send(doc);
+      });
     });
 });
 

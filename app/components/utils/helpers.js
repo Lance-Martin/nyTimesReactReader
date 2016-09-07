@@ -22,13 +22,12 @@ var Helpers = {
   postSaved: function(title, URL, date) {
     console.log('helper activated');
     return axios.post('/api/saved', {title: title, URL: URL, date: date}).then(function(result){
-      console.log(result);
       return (result);
     });
   },
-  deleteSaved: function() {
-    return axios.delete('/api/saved' + article._id).then(function(result){
-      console.log(result);
+  deleteSaved: function(id) {
+    return axios.delete('/api/saved/' + id).then(function(result){
+      return result;
     });
   }
 };
