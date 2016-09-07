@@ -11,8 +11,6 @@ var Query = React.createClass({
   handleChange: function(e){
 
     	// Here we create syntax to capture any change in text to the query terms (pre-search).
-    	// See this Stack Overflow answer for more details:
-    	// http://stackoverflow.com/questions/21029999/react-js-identifying-different-inputs-with-one-onchange-handler
     	var newState = {};
     	newState[e.target.name] = e.target.value;
     	this.setState(newState);
@@ -21,7 +19,6 @@ var Query = React.createClass({
 
 	// When a user submits...
 	handleClick: function(){
-		console.log("CLICK");
 		// Set the parent to have the search term
 		this.props.getArticles(this.state.term, this.state.startDate, this.state.endDate);
     this.setState({
@@ -31,6 +28,9 @@ var Query = React.createClass({
     })
 	},
   render: function(){
+    var btnStyle = {
+      marginTop: '5px'
+    }
     return (
       <div className = "form-group" >
           <h3>Article title:</h3>
@@ -39,7 +39,7 @@ var Query = React.createClass({
           <input type = "text" name = "startDate" value = {this.state.startDate} className = "form-control" onChange = {this.handleChange}/>
           <h3>End date:</h3>
           <input type = "text" value = {this.state.endDate} name = "endDate" className = "form-control" onChange = {this.handleChange} />
-          <button type = "button" onClick = {this.handleClick} className = "btn btn-danger">Submit</button>
+          <button type = "button" onClick = {this.handleClick} className = "btn btn-danger" style = {btnStyle}>Submit</button>
       </div>
     );
   }

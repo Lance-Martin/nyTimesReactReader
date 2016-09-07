@@ -29,18 +29,14 @@ var Main = React.createClass({
     });
   },
   removeSaved: function(id){
-    console.log("remove on main hit");
     var that = this;
     Helpers.deleteSaved(id).then(function(results){
-      console.log("my results",results)
       that.setState({
         savedArticles: results.data
       });
     });
   },
   render: function() {
-    console.log(this.state.savedArticles);
-    //this.checkSaved();
     const childrenWithProps = React.Children.map(this.props.children,
      (child) => React.cloneElement(child, {
        savedArticles: this.state.savedArticles,
@@ -49,18 +45,26 @@ var Main = React.createClass({
      })
     );
     var jumboStyle = {
-      textAlign: 'center'
+      textAlign: 'center',
+      marginBottom: '5px'
     };
+    var btnStyle = {
+      marginLeft: '5px'
+    };
+    var navStyle = {
+      marginTop: '5px',
+      marginBottom: '10px'
+    }
   return (
     <div className = "container">
       <div className="jumbotron" style = {jumboStyle}>
         <h1>New York Times Article Search</h1>
         <p>Search for and pin articles of interest!</p>
       </div>
-      <nav className="navbar navbar-inverse">
+      <nav className="navbar navbar-inverse" style = {navStyle}>
         <div className = "container">
           <a href = "#/Search"><button type="button" className="btn btn-default navbar-btn">Search</button></a>
-          <a href = "#/Saved"><button type="button" className="btn btn-default navbar-btn">Saved Articles</button></a>
+          <a href = "#/Saved"><button type="button" className="btn btn-default navbar-btn" style = {btnStyle}>Saved Articles</button></a>
         </div>
       </nav>
       <div className = "row">

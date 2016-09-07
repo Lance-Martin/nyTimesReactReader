@@ -38,6 +38,9 @@ var Search = React.createClass({
   },
   render: function(){
     var that = this;
+    var saveBtnStyle = {
+      marginLeft: "5px"
+    };
     return (
       <div className = "container">
         <div className="panel panel-default">
@@ -62,7 +65,7 @@ var Search = React.createClass({
                     <h4 key={i}>{result.headline.main}</h4>
                     <p>{"article date:" + result.pub_date}</p>
                     <a className = "btn btn-default" href = {result.web_url}>Read Full Story</a>
-                    <btn className = "btn btn-danger" data-title = {result.headline.main} data-date = {result.pub_date} data-url = {result.web_url} onClick = {that.saveStory}>Save Article</btn>
+                    <btn className = "btn btn-danger" data-title = {result.headline.main} data-date = {result.pub_date} data-url = {result.web_url} onClick = {that.saveStory} style = {saveBtnStyle}>Save Article</btn>
                   </div>
                 )
               }

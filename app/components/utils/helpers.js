@@ -5,8 +5,6 @@ var apiCode = 'a4a45edb5a264d8291dd90482a5f7c7d';
 var Helpers = {
   runQuery: function(title,startYear,endYear){
     var queryURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q="+ title +"&page=0&sort=newest&begin_date="+startYear+"0101&end_date="+endYear+"0101&api-key=" + apiCode;
-      // var queryURL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json/&q='+ title + "/api-key="+apiCode;
-
       return axios.get(queryURL)
 			.then(function(response){
 

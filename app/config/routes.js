@@ -12,19 +12,9 @@ var Results = require('../components/children/grandChildren/results.js');
 
 module.exports = (
   <Route path='/' component={Main}>
-
-		{/* If user selects Child1 then show the appropriate component*/}
 		<Route path='Search' component={Search}>
-      {/* <Route path='query' component={Query} />
-      <Route path='results' component={Results}/>
-      <IndexRoute component = {Query} /> */}
 		</Route>
-
-		{/* If user selects Child2 then show the appropriate component*/}
 		<Route path='Saved' component={Saved} />
-
-		{/*If user selects any other path... we get the Home Route*/}
 		<IndexRoute component={Search} />
-
 	</Route>
 );

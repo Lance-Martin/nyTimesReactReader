@@ -40,7 +40,6 @@ router.get('/api/saved', function(req,res){
 });
 
 router.post('/api/saved', function(req, res){
-  console.log('route hit');
   var newArticle = new Article(req.body);
   Article.create({title: req.body.title, URL: req.body.URL, date: req.body.date});
 });
@@ -50,7 +49,6 @@ router.delete('/api/saved/:id', function(req, res){
       if (err) throw err;
       Article.find({}).sort({date: -1}).exec(function(err, doc){
         if (err) throw err;
-        console.log(doc)
         res.send(doc);
       });
     });

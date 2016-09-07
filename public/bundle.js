@@ -27124,10 +27124,8 @@
 	    });
 	  },
 	  removeSaved: function removeSaved(id) {
-	    console.log("remove on main hit");
 	    var that = this;
 	    Helpers.deleteSaved(id).then(function (results) {
-	      console.log("my results", results);
 	      that.setState({
 	        savedArticles: results.data
 	      });
@@ -27136,8 +27134,6 @@
 	  render: function render() {
 	    var _this = this;
 
-	    console.log(this.state.savedArticles);
-	    //this.checkSaved();
 	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
 	      return React.cloneElement(child, {
 	        savedArticles: _this.state.savedArticles,
@@ -27146,7 +27142,15 @@
 	      });
 	    });
 	    var jumboStyle = {
-	      textAlign: 'center'
+	      textAlign: 'center',
+	      marginBottom: '5px'
+	    };
+	    var btnStyle = {
+	      marginLeft: '5px'
+	    };
+	    var navStyle = {
+	      marginTop: '5px',
+	      marginBottom: '10px'
 	    };
 	    return React.createElement(
 	      'div',
@@ -27167,7 +27171,7 @@
 	      ),
 	      React.createElement(
 	        'nav',
-	        { className: 'navbar navbar-inverse' },
+	        { className: 'navbar navbar-inverse', style: navStyle },
 	        React.createElement(
 	          'div',
 	          { className: 'container' },
@@ -27185,7 +27189,7 @@
 	            { href: '#/Saved' },
 	            React.createElement(
 	              'button',
-	              { type: 'button', className: 'btn btn-default navbar-btn' },
+	              { type: 'button', className: 'btn btn-default navbar-btn', style: btnStyle },
 	              'Saved Articles'
 	            )
 	          )
@@ -27206,12 +27210,12 @@
 /* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 
 	var Saved = React.createClass({
-	  displayName: "Saved",
+	  displayName: 'Saved',
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -27224,56 +27228,61 @@
 	    this.forceUpdate();
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    console.log("NEW PROPS BEING RECEIVED", nextProps);
 	    this.setState({ saved: nextProps.savedArticles });
 	  },
 	  render: function render() {
 	    var that = this;
-	    console.log("nwe saved", this.state.saved);
+	    var deleteBtnStyle = {
+	      marginLeft: '5px'
+	    };
 	    return React.createElement(
-	      "div",
-	      { className: "panel panel-default" },
+	      'div',
+	      { className: 'container' },
 	      React.createElement(
-	        "div",
-	        { className: "panel-heading" },
+	        'div',
+	        { className: 'panel panel-default' },
 	        React.createElement(
-	          "h3",
-	          { className: "panel-title" },
-	          "Saved Articles"
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "panel-body" },
-	        this.state.saved ? this.state.saved.map(function (article, i) {
-	          return React.createElement(
-	            "div",
-	            { key: i, className: "container" },
-	            React.createElement(
-	              "h4",
-	              { key: i },
-	              article.title
-	            ),
-	            React.createElement(
-	              "p",
-	              null,
-	              "article date:" + article.date
-	            ),
-	            React.createElement(
-	              "a",
-	              { className: "btn btn-default", href: article.URL },
-	              "Read Full Story"
-	            ),
-	            React.createElement(
-	              "btn",
-	              { className: "btn btn-danger", "data-id": article._id, onClick: that.handleClick },
-	              "Delete story"
-	            )
-	          );
-	        }) : React.createElement(
-	          "h3",
-	          null,
-	          "No search has been entered."
+	          'div',
+	          { className: 'panel-heading' },
+	          React.createElement(
+	            'h3',
+	            { className: 'panel-title' },
+	            'Saved Articles'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          this.state.saved ? this.state.saved.map(function (article, i) {
+	            return React.createElement(
+	              'div',
+	              { key: i, className: 'container' },
+	              React.createElement(
+	                'h4',
+	                { key: i },
+	                article.title
+	              ),
+	              React.createElement(
+	                'p',
+	                null,
+	                "article date:" + article.date
+	              ),
+	              React.createElement(
+	                'a',
+	                { className: 'btn btn-default', href: article.URL },
+	                'Read Full Story'
+	              ),
+	              React.createElement(
+	                'btn',
+	                { className: 'btn btn-danger', 'data-id': article._id, onClick: that.handleClick, style: deleteBtnStyle },
+	                'Delete story'
+	              )
+	            );
+	          }) : React.createElement(
+	            'h3',
+	            null,
+	            'There are no saved articles yet.'
+	          )
 	        )
 	      )
 	    );
@@ -27330,6 +27339,9 @@
 	  },
 	  render: function render() {
 	    var that = this;
+	    var saveBtnStyle = {
+	      marginLeft: "5px"
+	    };
 	    return React.createElement(
 	      'div',
 	      { className: 'container' },
@@ -27387,7 +27399,7 @@
 	              ),
 	              React.createElement(
 	                'btn',
-	                { className: 'btn btn-danger', 'data-title': result.headline.main, 'data-date': result.pub_date, 'data-url': result.web_url, onClick: that.saveStory },
+	                { className: 'btn btn-danger', 'data-title': result.headline.main, 'data-date': result.pub_date, 'data-url': result.web_url, onClick: that.saveStory, style: saveBtnStyle },
 	                'Save Article'
 	              )
 	            );
@@ -27425,8 +27437,6 @@
 	  handleChange: function handleChange(e) {
 
 	    // Here we create syntax to capture any change in text to the query terms (pre-search).
-	    // See this Stack Overflow answer for more details:
-	    // http://stackoverflow.com/questions/21029999/react-js-identifying-different-inputs-with-one-onchange-handler
 	    var newState = {};
 	    newState[e.target.name] = e.target.value;
 	    this.setState(newState);
@@ -27434,7 +27444,6 @@
 
 	  // When a user submits...
 	  handleClick: function handleClick() {
-	    console.log("CLICK");
 	    // Set the parent to have the search term
 	    this.props.getArticles(this.state.term, this.state.startDate, this.state.endDate);
 	    this.setState({
@@ -27444,6 +27453,9 @@
 	    });
 	  },
 	  render: function render() {
+	    var btnStyle = {
+	      marginTop: '5px'
+	    };
 	    return React.createElement(
 	      "div",
 	      { className: "form-group" },
@@ -27467,7 +27479,7 @@
 	      React.createElement("input", { type: "text", value: this.state.endDate, name: "endDate", className: "form-control", onChange: this.handleChange }),
 	      React.createElement(
 	        "button",
-	        { type: "button", onClick: this.handleClick, className: "btn btn-danger" },
+	        { type: "button", onClick: this.handleClick, className: "btn btn-danger", style: btnStyle },
 	        "Submit"
 	      )
 	    );
@@ -27528,8 +27540,6 @@
 	var Helpers = {
 	  runQuery: function runQuery(title, startYear, endYear) {
 	    var queryURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + title + "&page=0&sort=newest&begin_date=" + startYear + "0101&end_date=" + endYear + "0101&api-key=" + apiCode;
-	    // var queryURL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json/&q='+ title + "/api-key="+apiCode;
-
 	    return axios.get(queryURL).then(function (response) {
 
 	      return response.data.response.docs;
